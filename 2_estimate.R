@@ -1,11 +1,8 @@
 setwd('~/Dropbox/dataProjects/swift/haiti2/r')
+
 library(tidyverse)
 library(haven)
 library(leaps)
-data <- read_dta("../2_data/2_haiti2012wDurablesECVMASI.dta")
-data <- filter(data, complete.cases(data))
-
-summary(data$pcexp)
 
 data <- read_dta("./2_haiti2012wDurablesECVMASI_wFolds.dta")
 data <- filter(data, complete.cases(data))

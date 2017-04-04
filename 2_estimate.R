@@ -16,6 +16,8 @@ maxModel <- 100
 
 out <- matrix(NA, nrow = folds, ncol = maxModel)
 
+# folds <- as.integer(runif(nrow(data), 0, 10)) + 1
+
 for (i in 1:folds) {
   train <- filter(data, fold != i)
   test <- filter(data, fold == i)

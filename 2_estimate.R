@@ -16,7 +16,7 @@ maxModel <- 100
 
 out <- matrix(NA, nrow = folds, ncol = maxModel)
 
-# folds <- as.integer(runif(nrow(data), 0, 10)) + 1
+# folds <- as.integer(runif(nrow(data), 0, 10)) + 1 # add a seed
 
 for (i in 1:folds) {
   train <- filter(data, fold != i)
@@ -82,11 +82,20 @@ ggplot(data = out.graph.data, aes(x = modSize, y = rmse)) +
 opt.size <- as.integer(filter(out.graph.data, rmse >= min(uci)) %>% 
   summarize(max(modSize)))
 
-opt.regressors <- names(coef(result, opt.size))[2:(opt.size + 1)]
+x <- bind_rows(x.train, x.test)
+y <- bind_rows(y.train, y.test)
+
+opt.result <- regsubsets(as.matrix(x), as.matrix(y), weights = as.matrix(data$hhd_size),
+                     method = 'forward', nvmax = opt.size, really.big = FALSE)
+
+opt.regressors <- names(coef(opt.result, opt.size))[2:(opt.size + 1)]
 opt.frmla <- as.formula(paste('pcexpLog ~  ', paste(opt.regressors, collapse = ' + '), sep = ''))
 lm(opt.frmla, data = data)
 
-
-opt.regressors.all <- names(coef(result, 36))[2:(36 + 1)]
+opt.size.all <- as.integer(filter(out.graph.data, rmse == min(rmse)) %>% 
+  summarize(max(modSize)))
+opt.result.all <- regsubsets(as.matrix(x), as.matrix(y), weights = as.matrix(data$hhd_size),
+                         method = 'forward', nvmax = opt.size.all, really.big = FALSE)
+opt.regressors.all <- names(coef(opt.result.all, 36))[2:(36 + 1)]
 opt.frmla.all <- as.formula(paste('pcexpLog ~  ', paste(opt.regressors.all, collapse = ' + '), sep = ''))
 lm(opt.frmla.all, data = data)

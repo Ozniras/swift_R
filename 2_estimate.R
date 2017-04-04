@@ -64,6 +64,8 @@ for (i in 1:folds) {
 }
 
 out <- as_tibble(out[1:lenModel])
+save(out, file = 'out-rmseFromModel.RData')
+
 out.graph.data <- 
   tibble(modSize = 1:(result$np - 1), 
          rmse = colMeans(out), 
